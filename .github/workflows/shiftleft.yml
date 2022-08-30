@@ -45,7 +45,7 @@ jobs:
       run: |
         curl https://cdn.shiftleft.io/download/sl > ${GITHUB_WORKSPACE}/sl && chmod a+rx ${GITHUB_WORKSPACE}/sl
     - name: Validate Build Rules
-      #added v2 tag
+      #added v2 tag blah
       run: |
         ${GITHUB_WORKSPACE}/sl check-analysis --v2 --app shiftleft-java-demo \
             --branch "${{ github.head_ref || steps.extract_branch.outputs.branch }}" \
