@@ -55,8 +55,8 @@ jobs:
       run: |
         ${GITHUB_WORKSPACE}/sl check-analysis --v2 --app shiftleft-java-demo \
             --branch "${{ github.head_ref || steps.extract_branch.outputs.branch }}" \
-            --source=previous \
-            --target=${scanId} \
+            --source scan.1 \
+            --target scan.${scanId} \
             --report 
             
       env:
