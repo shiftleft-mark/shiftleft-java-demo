@@ -4,5 +4,4 @@ build_rules:
       - vuln
     severity:
       - critical
-    threshold: 10
   
