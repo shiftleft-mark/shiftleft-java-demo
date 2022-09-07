@@ -4,9 +4,4 @@ build_rules:
       - vuln
     severity:
       - critical
-    threshold: 10
-  - id: no-reachable-oss-vuln
-    finding_types: [oss_vuln]
-    options:
-      reachable: true
-      num_findings: 5
+  
