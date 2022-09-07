@@ -32,7 +32,11 @@ jobs:
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       id: extract_branch
     - name: NextGen Static Analysis
-      run: ${GITHUB_WORKSPACE}/sl analyze --strict --wait --app shiftleft-java-demo --tag branch=${{ github.head_ref || steps.extract_branch.outputs.branch }} --vcs-prefix-correction "io/shiftleft=src/main/java/" --java --cpg target/hello-shiftleft-0.0.1.jar
+      run: 
+       export scanId=`${GITHUB_WORKSPACE}/sl analyze --strict --wait --app shiftleft-java-demo \
+        --tag branch=${{ github.head_ref || steps.extract_branch.outputs.branch }} \
+        --vcs-prefix-correction "io/shiftleft=src/main/java/" --java \
+        --cpg target/hello-shiftleft-0.0.1.jar | grep -i "The Scan ID for" | cut -d ' ' -f8`
       env:
         SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
         
@@ -44,15 +48,23 @@ jobs:
     - name: Download ShiftLeft CLI
       run: |
         curl https://cdn.shiftleft.io/download/sl > ${GITHUB_WORKSPACE}/sl && chmod a+rx ${GITHUB_WORKSPACE}/sl
+    - name: Validate Variables
+      run:
+        echo "scan ID:" $scanId \
+        export scanPrev=$(($scanId-1)) \
+        echo "Previous Scan:" $scanPrev
+        
     - name: Validate Build Rules
       run: |
-        ${GITHUB_WORKSPACE}/sl check-analysis --app shiftleft-java-demo \
+        ${GITHUB_WORKSPACE}/sl check-analysis --v2 --app shiftleft-java-demo \
             --branch "${{ github.head_ref || steps.extract_branch.outputs.branch }}" \
+            --source $scanPrev
+            --target $scanId
             --report \
             --github-pr-number=${{github.event.number}} \
             --github-pr-user=${{ github.repository_owner }} \
             --github-pr-repo=${{ github.event.repository.name }} \
-            --github-token=${{ secrets.GITHUB_TOKEN }}
+            --github-token=${{ secrets.GITHUB_TOKEN }} 
       env:
         SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
          
