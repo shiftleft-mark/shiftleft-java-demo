@@ -36,7 +36,7 @@ jobs:
         export scanId='${GITHUB_WORKSPACE}/sl analyze --strict --wait --app shiftleft-java-demo \
         --tag branch=${{ github.head_ref || steps.extract_branch.outputs.branch }} \
         --vcs-prefix-correction "io/shiftleft=src/main/java/" --java \
-        --cpg target/hello-shiftleft-0.0.1.jar | grep -i "The Scan ID for" | cut -d ' ' -f8'
+        --cpg target/hello-shiftleft-0.0.1.jar | grep -i "The Scan ID for" | cut -d ' '$8'
 
   Build-Rules: 
     runs-on: ubuntu-latest
