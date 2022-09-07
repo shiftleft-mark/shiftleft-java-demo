@@ -33,12 +33,10 @@ jobs:
       id: extract_branch
     - name: NextGen Static Analysis
       run:
-        export scanId=`${GITHUB_WORKSPACE}/sl analyze --strict --wait --app shiftleft-java-demo \
-        --tag branch=${{ github.head_ref || steps.extract_branch.outputs.branch }} \
-        --vcs-prefix-correction "io/shiftleft=src/main/java/" --java \
-        --cpg target/hello-shiftleft-0.0.1.jar | grep -i "The Scan ID for" | cut -d ' ' -f8 `
-     
-
+        ${GITHUB_WORKSPACE}/sl analyze --strict --wait --app shiftleft-java-demo --tag branch=${{ github.head_ref || steps.extract_branch.outputs.branch }} --vcs-prefix-correction "io/shiftleft=src/main/java/" --java --cpg target/hello-shiftleft-0.0.1.jar
+      env:
+        SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
+        
     - name: Validate Variables
       run:
         echo "scan ID:" $scanId \
